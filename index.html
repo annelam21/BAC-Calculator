@@ -1,0 +1,179 @@
+<html>
+    <head>
+        <title>BAC Calculator</title>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+        <style>
+            body {
+                text-align: center;
+                font-family: 'Roboto', sans-serif;
+                margin: 0;
+            }
+            input {
+                font-family: 'Roboto', sans-serif;
+                font-size: 1.2em;
+                text-align: center;
+                background-color: rgb(230, 230, 230);
+                border: none;
+                border-bottom: 1px solid;
+                transition: 0.2s;
+            }
+            input:focus {
+                outline: none;
+                border-bottom: 1px solid rgb(117, 117, 255);
+            }
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button { /* hides scroll arrows */
+                -webkit-appearance: none;
+                margin: 0;
+            }
+            button {
+                width: 10em;
+                height: 2.5em;
+                font-family: 'Roboto', sans-serif;
+                transition: 0.4s;
+                cursor: pointer;
+            }
+            button:hover {
+                border: none;
+                border-radius: 3px;
+                background-color: rgb(155, 155, 155);
+            }
+            hr {
+                width: 70%;
+            }
+            #container {
+                width: 70%;
+                min-height: 100%;
+                background-color: rgb(230, 230, 230);
+                margin: auto;
+                padding-bottom: 2em;
+            }
+            #title {
+                padding-top: 2vh;
+            }
+            #left {
+                width: 50%;
+                height: 12em;
+                float: left;
+            }
+            #right {
+                width: 50%;
+                height: 12em;
+                float: right;
+            }
+            #calcButton {
+                margin-top: 12vh;
+                margin-bottom: 3vh;
+            }
+            #result {
+                width: 40%;
+                margin: auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+            <h1 id="title">BAC Calculator</h1>
+            
+            <div id="left">
+                <p>Weight (in pounds)</p>
+                <input id="weight" type="number">
+                <br><br><br>
+
+                <input id="male" type="radio" name="gender" value="male">
+                <label for="male">Male</label>
+                <input id="female" type="radio" name="gender" value="female">
+                <label for="female">Female</label>
+                <br>
+            </div>
+            
+            <div id="right">
+                <p>Number of drinks</p>
+                <input id="drinks" type="number">
+                <br>
+
+                <p>Alcohol by volume</p>
+                <input id="volume" type="number">
+                <br>
+
+                <p>Hours since last drink</p>
+                <input id="time" type="number">
+                <br>
+            </div>  
+
+            <button id="calcButton" onclick="calcBac()">Calculate</button>
+            
+            <hr>
+            
+            <div id="result">
+                <p>Result:</p>
+            </div>
+
+            <button onclick="resetResults()">Clear Results</button>
+        </div>
+        
+        <script>
+            var d = document;
+            var resultDiv = d.getElementById("result");
+            
+            function calcBac() {
+                var newP = d.createElement('p');
+                newP.classList.add('res');
+                resultDiv.appendChild(newP);
+
+                //Retrieve user input
+                var weight = d.getElementById('weight').value;
+                var radios = d.getElementsByName('gender');
+                var gender = '';
+                for (var i = 0; i < radios.length; i++) {
+                    if (radios[i].checked) {
+                        radios = radios[i].value;
+                        if (radios == "male") {
+                            gender = 0.73;
+                        }
+                        else if (radios == "female"){
+                            gender = 0.66;
+                        }
+                        break;
+                    }
+                }
+                var drinks = d.getElementById('drinks').value;
+                var volume = d.getElementById('volume').value;
+                var time = d.getElementById('time').value;
+                
+                //Verify user input is not blank
+                if (weight == '' || gender == '' || drinks == '' || volume == '' || time == '') {
+                    var text = d.createTextNode("Input invalid. Try again.");
+                    newP.appendChild(text);
+                    newP.style.color = "red";
+                    return;
+                }
+                
+                //Calculate blood alcohol content
+                var consumed = drinks * volume;
+                var bac = (consumed * 5.14 / weight * gender) - 0.015 * time;;
+                bac = bac.toFixed(3);
+                if (bac <= 0) {
+                    bac = 0;
+                }
+
+                //Display whether it is legal to drive
+                var text;
+                if (bac < 0.08) {
+                    text = d.createTextNode("Your BAC is " + bac + ". It is legal for you to drive.");
+                }
+                else {
+                    text = d.createTextNode("Your BAC is " + bac + ". It is not legal for you to drive.");
+                }
+                newP.appendChild(text);
+            }
+            function resetResults() {
+                var elems = resultDiv.getElementsByClassName('res');
+                var count = elems.length;
+                for (var i = 0; i < count; i++) {
+                    resultDiv.removeChild(elems[0]);
+                }
+            }
+        </script>
+    </body>
+</html>
