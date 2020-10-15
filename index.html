@@ -1,5 +1,7 @@
 <html>
     <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
         <title>BAC Calculator</title>
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
         <style>
@@ -62,7 +64,7 @@
                 float: right;
             }
             #calcButton {
-                margin-top: 12vh;
+                margin-top: 13vh;
                 margin-bottom: 3vh;
             }
             #result {
@@ -77,7 +79,7 @@
             
             <div id="left">
                 <p>Weight (in pounds)</p>
-                <input id="weight" type="number">
+                <input id="weight" type="number" min="0">
                 <br><br><br>
 
                 <input id="male" type="radio" name="gender" value="male">
@@ -89,15 +91,15 @@
             
             <div id="right">
                 <p>Number of drinks</p>
-                <input id="drinks" type="number">
+                <input id="drinks" type="number" min="0">
                 <br>
 
                 <p>Alcohol by volume</p>
-                <input id="volume" type="number">
+                <input id="volume" type="number" min="0">
                 <br>
 
                 <p>Hours since last drink</p>
-                <input id="time" type="number">
+                <input id="time" type="number" min="0">
                 <br>
             </div>  
 
@@ -115,14 +117,41 @@
         <script>
             var d = document;
             var resultDiv = d.getElementById("result");
+            var w = d.getElementById('weight');
+            var dr = d.getElementById('drinks');
+            var v = d.getElementById('volume');
+            var t = d.getElementById('time');
             
+            //Prevent e and -
+            w.onkeydown = function(e) {
+                if (e.keyCode == 69 || e.keyCode == 189) {
+                    return false;
+                }
+            }
+            dr.onkeydown = function(e) {
+                if (e.keyCode == 69 || e.keyCode == 189) {
+                    return false;
+                }
+            }
+            v.onkeydown = function(e) {
+                if (e.keyCode == 69 || e.keyCode == 189) {
+                    return false;
+                }
+            }
+            t.onkeydown = function(e) {
+                if (e.keyCode == 69 || e.keyCode == 189) {
+                    return false;
+                }
+            }
+
             function calcBac() {
+               //Create p element to store the result 
                 var newP = d.createElement('p');
                 newP.classList.add('res');
                 resultDiv.appendChild(newP);
 
                 //Retrieve user input
-                var weight = d.getElementById('weight').value;
+                var weight = w.value;
                 var radios = d.getElementsByName('gender');
                 var gender = '';
                 for (var i = 0; i < radios.length; i++) {
@@ -137,9 +166,9 @@
                         break;
                     }
                 }
-                var drinks = d.getElementById('drinks').value;
-                var volume = d.getElementById('volume').value;
-                var time = d.getElementById('time').value;
+                var drinks = dr.value;
+                var volume = v.value;
+                var time = t.value;
                 
                 //Verify user input is not blank
                 if (weight == '' || gender == '' || drinks == '' || volume == '' || time == '') {
@@ -168,11 +197,19 @@
                 newP.appendChild(text);
             }
             function resetResults() {
+                //Clear results
                 var elems = resultDiv.getElementsByClassName('res');
                 var count = elems.length;
                 for (var i = 0; i < count; i++) {
                     resultDiv.removeChild(elems[0]);
                 }
+                //Clear input fields
+                w.value = '';
+                d.getElementById('male').checked = false;
+                d.getElementById('female').checked = false;
+                dr.value = '';
+                v.value = '';
+                t.value = '';
             }
         </script>
     </body>
