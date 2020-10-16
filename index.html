@@ -181,7 +181,7 @@
                 //Calculate blood alcohol content
                 var consumed = drinks * volume;
                 var bac = (consumed * 5.14 / weight * gender) - 0.015 * time;;
-                bac = bac.toFixed(3);
+                bac = bac.toFixed(5);
                 if (bac <= 0) {
                     bac = 0;
                 }
